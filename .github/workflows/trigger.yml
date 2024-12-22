@@ -1,0 +1,30 @@
+name: Override
+on:
+  workflow_dispatch:
+    inputs:
+      runtime:
+        description: "Runtime."
+        required: true
+        type: choice
+        options:
+          - polkadot-runtime
+          - staging-kusama-runtime
+      ref:
+        description: "Ref."
+        type: string
+
+jobs:
+  mainnet:
+    name: Override
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features: ["force-debug", "runtime-metrics"]
+    steps:
+      - name: Override
+        uses: hack-ink/polkadot-runtime-releaser/action/override@main
+        with:
+          repository: hack-ink/polkadot-runtime-releaser-workshop
+          ref: ${{ inputs.ref }}
+          runtime: ${{ inputs.runtime }}
+          features: ${{ matrix.features }}
