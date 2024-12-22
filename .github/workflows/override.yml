@@ -1,0 +1,71 @@
+name: Override
+on:
+  workflow_dispatch:
+    inputs:
+      # The target runtime to build.
+      #
+      # For example, `polkadot-runtime` or `staging-kusama-runtime`.
+      runtime:
+        description: >
+          Target runtime crate to build.
+        required: true
+        type: choice
+        # Add the runtime crate name here that you want to build its override.
+        #
+        # These will be used as the target branch names for the override.
+        # Make sure these branches exist in the runtime repository.
+        options: [polkadot-runtime, staging-kusama-runtime]
+      # The branch, tag, or commit of the runtime repository to fetch.
+      #
+      # Generally, this would be the tag `vX.Y.Z` or `runtime-XYZ`.
+      ref:
+        description: >
+          Branch, tag, or commit of the runtime repository to fetch.
+        type: string
+
+permissions:
+  # Needed to commit the overrides.
+  contents: write
+
+env:
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+  CARGO_TERM_COLOR: always
+
+  RUST_BACKTRACE: full
+
+jobs:
+  mainnet:
+    name: Override
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        features: [force-debug, runtime-metrics]
+    steps:
+      - name: Override
+        # It is recommended to use a specific version of the action in production.
+        #
+        # For example:
+        # uses: hack-ink/polkadot-runtime-releaser/action/override@vX.Y.Z
+        uses: hack-ink/polkadot-runtime-releaser/action/override@main
+        with:
+          # The runtime repository.
+          # For demonstration purposes, we use the same repository.
+          #
+          # In production,
+          # current repository should be `x-network/runtime-overrides`,
+          # the runtime repository should be `x-network/polkadot-runtime`.
+          repository: hack-ink/polkadot-runtime-releaser-workshop
+          # The branch, tag, or commit of the runtime repository to fetch.
+          #
+          # Generally, this would be the tag `vX.Y.Z` or `runtime-XYZ`.
+          ref: ${{ inputs.ref }}
+          # The target runtime to build.
+          #
+          # For example, `polkadot-runtime` or `staging-kusama-runtime`.
+          runtime: ${{ inputs.runtime }}
+          # The features to enable for the override.
+          #
+          # For example, `force-debug`, `runtime-metrics` or `force-debug,runtime-metrics`.
+          features: ${{ matrix.features }}
+          # Use a Personal Access Token (PAT) if `GITHUB_TOKEN` does not have enough permissions to commit the overrides.
+          # token: ..
