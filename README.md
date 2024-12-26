@@ -19,3 +19,4 @@ This repository contains a production-ready polkadot-sdk-based runtime release s
 1. Copy and configure the [release](.github/workflows/release.yml) action to your runtime repository.
 2. The action file has pretty detailed comments, you can follow the comments to configure the action. Please feel free to open an issue in this repository if you find any issues or have any questions.
 3.
+
