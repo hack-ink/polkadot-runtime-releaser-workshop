@@ -33,3 +33,4 @@ This repository contains a production-ready polkadot-sdk-based runtime release s
 
 #### Workshop Example
 - [Release `v0.0.1`](https://github.com/hack-ink/polkadot-runtime-releaser-workshop/releases/tag/v0.0.1)
+
